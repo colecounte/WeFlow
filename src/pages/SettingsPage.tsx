@@ -392,9 +392,9 @@ function SettingsPage({ onClose }: SettingsPageProps = {}) {
         setUpdateChannel(savedUpdateChannel)
       } else {
         const currentVersion = await window.electronAPI.app.getVersion()
-        if (/-preview\.\d+\.\d+$/i.test(currentVersion)) {
+        if (/^0\.\d{2}\.\d+$/i.test(currentVersion) || /-preview\.\d+\.\d+$/i.test(currentVersion)) {
           setUpdateChannel('preview')
-        } else if (/-dev\.\d+\.\d+\.\d+$/i.test(currentVersion) || /(alpha|beta|rc)/i.test(currentVersion)) {
+        } else if (/^\d{2}\.\d{1,2}\.\d{1,2}$/i.test(currentVersion) || /-dev\.\d+\.\d+\.\d+$/i.test(currentVersion) || /(alpha|beta|rc)/i.test(currentVersion)) {
           setUpdateChannel('dev')
         } else {
           setUpdateChannel('stable')

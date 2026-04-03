@@ -34,6 +34,8 @@ jobs:
 
       - name: Decide whether to build and generate preview version
         id: meta
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
@@ -49,13 +51,22 @@ jobs:
             SHOULD_BUILD=false
           fi
 
-          BASE_VERSION="$(node -p "require('./package.json').version.split('-')[0]")"
           YEAR_2="$(TZ=Asia/Shanghai date +%y)"
-          PREVIEW_VERSION="${BASE_VERSION}-preview.${YEAR_2}.${GITHUB_RUN_NUMBER}"
+          YEARLY_RUN_COUNT=1
+          LAST_VERSION="$(gh release view "$FIXED_PREVIEW_TAG" --repo "$GITHUB_REPOSITORY" --json body --jq '.body' 2>/dev/null | grep -Eo '0\.[0-9]{2}\.[0-9]+' | head -n 1 || true)"
+          if [[ "$LAST_VERSION" =~ ^0\.([0-9]{2})\.([0-9]+)$ ]]; then
+            LAST_YEAR="${BASH_REMATCH[1]}"
+            LAST_COUNT="${BASH_REMATCH[2]}"
+            if [ "$LAST_YEAR" = "$YEAR_2" ]; then
+              YEARLY_RUN_COUNT=$((LAST_COUNT + 1))
+            fi
+          fi
+
+          PREVIEW_VERSION="0.${YEAR_2}.${YEARLY_RUN_COUNT}"
 
           echo "should_build=$SHOULD_BUILD" >> "$GITHUB_OUTPUT"
           echo "preview_version=$PREVIEW_VERSION" >> "$GITHUB_OUTPUT"
-          echo "Preview version: $PREVIEW_VERSION (commits in last 24h on main: $COMMITS_24H)"
+          echo "Preview version: $PREVIEW_VERSION (commits in last 24h on main: $COMMITS_24H, yearly count: $YEARLY_RUN_COUNT)"
 
       - name: Ensure fixed preview prerelease exists
         env:

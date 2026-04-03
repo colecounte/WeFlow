@@ -36,11 +36,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          BASE_VERSION="$(node -p "require('./package.json').version.split('-')[0]")"
           YEAR_2="$(TZ=Asia/Shanghai date +%y)"
           MONTH="$(TZ=Asia/Shanghai date +%-m)"
           DAY="$(TZ=Asia/Shanghai date +%-d)"
-          DEV_VERSION="${BASE_VERSION}-dev.${YEAR_2}.${MONTH}.${DAY}"
+          DEV_VERSION="${YEAR_2}.${MONTH}.${DAY}"
           echo "dev_version=$DEV_VERSION" >> "$GITHUB_OUTPUT"
           echo "Dev version: $DEV_VERSION"
 
