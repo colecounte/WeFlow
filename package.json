@@ -55,10 +55,10 @@
     "npm": ">=10.0.0"
   },
   "prettier": {
-    "semi": false,
+    "semi": true,
     "singleQuote": true,
     "printWidth": 100,
-    "trailingComma": "none",
+    "trailingComma": "es5",
     "tabWidth": 2,
     "arrowParens": "avoid",
     "endOfLine": "lf"
