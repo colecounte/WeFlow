@@ -55,7 +55,7 @@
     "npm": ">=10.0.0"
   },
   "prettier": {
-    "semi": true,
+    "semi": false,
     "singleQuote": true,
     "printWidth": 100,
     "trailingComma": "es5",
